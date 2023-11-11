@@ -14,7 +14,7 @@ IMAGES_PATH = vals.PATH_1
 CASCADE_PATH = vals.PATH_3
 PREDICTOR_PATH = vals.PATH_7
 
-data = pd.DataFrame(columns=['image_name', 'image_original', 'face_height_to_width', 'face_height_to chin_height', 'face_width_to_jaw_width',
+data = pd.DataFrame(columns=['image_name', 'image_original', 'face_height_to_width', 'face_height_to_chin_height', 'face_width_to_jaw_width',
                              'face_width_to_eyes_width', 'eyes_width_to_jaw_width', 'face_height_to_forehead_height', 'chin_height_to_forehead_height',
                               'face_width_to_forehead_width', 'forehead_width_to_jaw_width', 'eyes_width_to_forehead_width', 'face_height_to_nose_height', 
                                'chin_height_to_nose_height', 'forehead_height_to_nose_height', 'features_original', 'feature_square',
