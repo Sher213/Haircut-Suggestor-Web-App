@@ -23,7 +23,10 @@ hair-type-classifier/hair_type_data.csv
 
 inception-face-shape-classifier/
 
-react-haircut-web-app/node_modules/
+config.js
+
+package-lock.json
+package.json
 
 react-haircut-web-app/npm-debug.log*
 react-haircut-web-app/yarn-debug.log*

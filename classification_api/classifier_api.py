@@ -4,7 +4,7 @@ import base64
 from PIL import Image
 import numpy as np
 from io import BytesIO
-from clf import face_classification, hair_classification
+from clf import face_classification, hair_classification, detect_bounding_box
 import vals
 
 app = Flask(__name__)
@@ -16,7 +16,21 @@ app.config['MYSQL_DB'] = vals.MYSQL_DB_API
 
 mysql = MySQL(app)
 
-@app.route('/', methods=["POST"])
+def create_response(res, status):
+    '''Creates response for tighter code
+    Parameters: 
+        res: data for response
+        status: status for response
+    Returns:
+        response: Flask response_class'''
+    response = app.response_class(
+        response=json.dumps(res),
+        status=status,
+        mimetype='application/json'
+    )
+    return (response)
+
+@app.route('/api/create_db', methods=["POST"])
 def index():
     # Create the database cursor within a route function
     cursor = mysql.connection.cursor()
@@ -31,44 +45,52 @@ def index():
     cursor.close()
     return "Database table created"
 
-@app.route("/api/add", methods=["POST"])
+@app.route("/api/add_to_db", methods=["POST"])
 def addClfn():
     clfn = (request.form['faceType'], request.form['hairType'])
     flash('Record was successfully added')
     return redirect(url_for('classify'))
 
+@app.route("/api/face-detec", methods=["POST"])
+def face_detect():
+    data = request.get_json()
 
+    if 'data' in data:
+        img_b64 = data.split(',')[1]
+            
+        img = Image.open(BytesIO(base64.b64decode(img_b64)))
+        img = img.convert('RGB')
+        arr = np.array(img)
+        faces = detect_bounding_box(arr)
+        
+        if len(faces) >= 1:
+                data = {"box" : str(faces[0])}
+                return (create_response(data, 200))
+        else:
+            return (create_response({}, 200))
+    else:
+        return (create_response({'JSONError': 'Invalid JSON request format.'}, 400))
 
 @app.route("/api/classify", methods=["POST"])
 def classify():
-    data = request.json
+    data = request.get_json()
 
     if 'data' in data:
-        #extract base64 and decode
         img_b64 = data.split(',')[1]
         image = Image.open(BytesIO(base64.b64decode(img_b64)))
         image = image.convert('RGB')
         arr = np.array(image)
         #make face and hair predictions
-        face_prediction = face_classification(arr)
-        hair_prediction = hair_classification(arr)
-        data = {'hair_prediction' : hair_prediction.tolist(), 'face_prediction' : face_prediction.tolist()}
+        try:
+            face_prediction = face_classification(arr)
+            hair_prediction = hair_classification(arr)
+            data = {'hair_prediction' : hair_prediction.tolist(), 'face_prediction' : face_prediction.tolist()}
         
-        response = app.response_class(
-            response=json.dumps(data),
-            status=200,
-            mimetype='application/json'
-        )
-        
-        #return predictions
-        return (response)
+            return (create_response(data, 200))
+        except Exception as e:
+            return (create_response({'NoFaceError' : 'No face detected.'}, 400))
     else:
-        response = app.response_class(
-            response=json.dumps({'error': 'Invalid JSON request format'}),
-            status=400,
-            mimetype='application/json'
-        )
-        return (response)
+        return (create_response({'JSONError': 'Invalid JSON request format.'}, 400))
 
 @app.route('/data')
 def do():

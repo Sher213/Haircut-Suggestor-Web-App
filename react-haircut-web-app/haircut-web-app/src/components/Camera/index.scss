@@ -1,0 +1,64 @@
+.main{
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    width: 100%;
+}
+
+.left {
+    background-color: blue;
+    width: 30%;
+    height: 100%;
+}
+
+.camera {
+    position: relative;
+    background-color: cadetblue;
+    height: 500px;
+    width: 500px;
+
+    video, canvas {
+        position: absolute;
+        width: inherit;
+        height: inherit;
+    }
+
+    .expandView {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        padding: 10px;
+        background-color: green;
+        font-size: large;
+    }
+}
+
+.result {
+    background-color: cornflowerblue;
+    color: black;
+    font-size: 50px;
+    width: 50%;
+
+    p {
+        background-color: white;
+    }
+
+    .photoContainer {
+        position: relative;
+        background-color: cadetblue;
+        width: fit-content;
+        height: fit-content;
+        margin-left: 50%;
+        .photo, .faceShape {
+            position: absolute;
+        }
+
+        .hairType {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 500;
+            height: 500;
+        }
+    }
+}
