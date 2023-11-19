@@ -27,6 +27,7 @@ config.js
 
 package-lock.json
 package.json
+.env
 
 react-haircut-web-app/npm-debug.log*
 react-haircut-web-app/yarn-debug.log*

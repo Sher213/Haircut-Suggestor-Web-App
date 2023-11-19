@@ -13,9 +13,9 @@ import straightHair from '../../assets/images/straight.png'
 import curlyHair from '../../assets/images/curly.png'
 
 const Camera = () => { 
-    const modPos = -20
-    const modW = 20
-    const modH = 100
+    const modPos = -50;
+    const modW = 100;
+    const modH = 150;
 
     const defCamWidth = 500;
     const defCamHeight = 500;
@@ -177,16 +177,74 @@ const Camera = () => {
                 requestAnimationFrame(sendFrameToServer);
             });
         };
-        //sendFrameToServer();
+        sendFrameToServer();
+    }
+
+    const classify = () => {
+        const mainView = document.querySelector('.mainView');
+        const width = mainView.clientWidth;
+        const height = mainView.clientHeight;
+
+        let video = videoRef.current;
+        let photoSend = document.createElement('canvas');
+
+        photoSend.width = width;
+        photoSend.height = height;
+
+        let ctx = photoSend.getContext('2d');
+        ctx.drawImage(video, 0, 0, width, height);
+        
+        const dataURL = photoSend.toDataURL();
+        
+        ClassifierAPI.ClassifyImage(dataURL)
+        .then(response => {
+            let photoTaken = photoRef.current;
+            let shapeChosen = shapePhotoRef.current;
+            let hairChosen = hairTypeRef.current;
+                        
+            shapeChosen.width = width;
+            shapeChosen.height = height;
+            photoTaken.width = width;
+            photoTaken.height = height;
+            hairChosen.width = hairImgSize;
+            hairChosen.height = hairImgSize;
+
+            let ctx = photoTaken.getContext('2d');
+            ctx.clearRect(0, 0, photoTaken.width, photoTaken.height);
+            let ctx2 = shapeChosen.getContext('2d');
+            ctx2.clearRect(0, 0, shapeChosen.width, shapeChosen.height);
+            let ctx3 = hairChosen.getContext('2d');
+            ctx3.clearRect(0, 0, hairChosen.width, hairChosen.height);
+
+            if ('NoFaceError' in response) {
+                alert("No faces were detected. Please try again.")
+            }
+            else {
+                setPrediction(response);
+                setClassified(true);
+                setPhotoTaken(true);
+
+                ctx.drawImage(video, 0, 0, width, height);
+            }
+        })
+        .catch(error => console.log('error', error));
     }
 
     const toggleCam = () => {
         const camera = document.querySelector('.camera');
         const main = document.querySelector('.main');
+        const p = document.querySelector('.photo');
+        const f = document.querySelector('.faceShape');
+        const h = document.querySelector('.hairType');
 
         if (camera && main && isExpanded == false) {
             camera.style.width = `${main.clientWidth}px`;
-            camera.style.height = `${main.clientHeight}px`; 
+            camera.style.height = `${main.clientHeight - 55}px`; 
+
+            p.style.opacity = 0;
+            f.style.opacity = 0;
+            h.style.opacity = 0;
+
             setExpanded(true);       
         }
         else if (isExpanded == true) {
@@ -196,6 +254,13 @@ const Camera = () => {
 
     const minCam = () => {
         const camera = document.querySelector('.camera');
+        const p = document.querySelector('.photo');
+        const f = document.querySelector('.faceShape');
+        const h = document.querySelector('.hairType');
+
+        p.style.opacity = 1;
+        f.style.opacity = 1;
+        h.style.opacity = 1;
 
         if (camera) {
             camera.style.width = `${defCamWidth}px`;
@@ -203,36 +268,6 @@ const Camera = () => {
             setExpanded(false);
         }
     };
-
-    const classify = () => {
-        const mainView = document.querySelector('.mainView');
-        const width = mainView.clientWidth;
-        const height = mainView.clientHeight;
-
-        let video = videoRef.current;
-        let photo = photoRef.current;
-
-        photo.width = width;
-        photo.height = height;
-
-        let ctx = photo.getContext('2d');
-        ctx.drawImage(video, 0, 0, width, height);
-        
-        const dataURL = photo.toDataURL();
-        
-        ClassifierAPI.ClassifyImage(dataURL)
-        .then(response => {
-            if ('NoFaceError' in response) {
-                alert("No faces were detected. Please try again.")
-            }
-            else {
-                setPrediction(response);
-                setClassified(true);
-                setPhotoTaken(true);
-            }
-        })
-        .catch(error => console.log('error', error));
-    }
 
     const makeDB = () => {
         const test = {'result' : 'done'}
@@ -313,9 +348,9 @@ const Camera = () => {
                     </button>
                 </div>
                 <div className="submit">
-                    <button className="takePhoto" onClick={classify} disabled={needFaceMessage}>Classify</button>
+                    <button className="takePhoto" onClick={classify} /*disabled={needFaceMessage}*/>Classify</button>
                     {needFaceMessage && (
-                    <div style={{ background: 'red', color: "yellow", marginTop: "10px" }}>
+                    <div style={{ paddingLeft: '30px', background: 'red', color: "yellow", marginTop: "10px" }}>
                         Need face before classifying.
                     </div>
                     )}
