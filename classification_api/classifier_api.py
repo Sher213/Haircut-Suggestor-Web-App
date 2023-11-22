@@ -5,6 +5,7 @@ from PIL import Image
 import numpy as np
 from io import BytesIO
 from clf import face_classification, hair_classification, detect_bounding_box
+from insta_web_scrape import get_insta_images
 import vals
 
 app = Flask(__name__)
@@ -46,10 +47,23 @@ def index():
     return "Database table created"
 
 @app.route("/api/add_to_db", methods=["POST"])
-def addClfn():
+def add_clfn():
     clfn = (request.form['faceType'], request.form['hairType'])
     flash('Record was successfully added')
     return redirect(url_for('classify'))
+
+@app.route("/api/insta_haircut_imgs", methods=["POST"])
+def return_image_srcs():
+    hashtag = ''
+    data = request.get_json()
+    if 'data' in data:
+        print(data)
+        srcs = get_insta_images(hashtag)
+        return (create_response({'srcs' : srcs}))
+    else:
+        return (create_response({'JSONError': 'Invalid JSON request format.'}, 400))
+
+
 
 @app.route("/api/face-detec", methods=["POST"])
 def face_detect():
@@ -64,8 +78,8 @@ def face_detect():
         faces = detect_bounding_box(arr)
         
         if len(faces) >= 1:
-                data = {"box" : str(faces[0])}
-                return (create_response(data, 200))
+                res = {"box" : str(faces[0])}
+                return (create_response(res, 200))
         else:
             return (create_response({}, 200))
     else:
@@ -84,9 +98,9 @@ def classify():
         try:
             face_prediction = face_classification(arr)
             hair_prediction = hair_classification(arr)
-            data = {'hair_prediction' : hair_prediction.tolist(), 'face_prediction' : face_prediction.tolist()}
+            res = {'hair_prediction' : hair_prediction.tolist(), 'face_prediction' : face_prediction.tolist()}
         
-            return (create_response(data, 200))
+            return (create_response(res, 200))
         except Exception as e:
             return (create_response({'NoFaceError' : 'No face detected.'}, 400))
     else:

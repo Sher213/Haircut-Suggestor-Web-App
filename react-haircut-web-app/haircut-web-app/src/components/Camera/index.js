@@ -181,9 +181,8 @@ const Camera = () => {
     }
 
     const classify = () => {
-        const mainView = document.querySelector('.mainView');
-        const width = mainView.clientWidth;
-        const height = mainView.clientHeight;
+        const width = defCamWidth;
+        const height = defCamHeight;
 
         let video = videoRef.current;
         let photoSend = document.createElement('canvas');

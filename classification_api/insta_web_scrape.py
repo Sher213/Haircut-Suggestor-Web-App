@@ -1,19 +1,15 @@
-import sys
-import os
 import time
 import re
-import requests
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from bs4 import BeautifulSoup
-import base64
 
 #build webdriver
 op = webdriver.ChromeOptions()
-#op.add_argument('headless')
+op.add_argument('headless')
 op.add_argument('--ignore-certificate-errors')
 op.add_argument('--ignore-ssl-errors')
 driver = webdriver.Chrome(options=op)
@@ -35,10 +31,20 @@ def get_insta_images(hashtag):
     WebDriverWait(driver, WEB_PAUSE_TIME).until(EC.presence_of_all_elements_located((By.CLASS_NAME, '_aagv')))
     #pass page source to beautiful soup
     soup = BeautifulSoup(driver.page_source, "html.parser")
-    images = soup.findAll(class_= '_aagv')
-    time.sleep(10)
+    images = soup.findAll(class_= 'x5yr21d xu96u03 x10l6tqk x13vifvy x87ps6o xh8yej3')
+    
+    images_src = []
 
-get_insta_images('fadehaircut')
+    for image in images:
+         #regex to find the src attribute
+        r = re.compile('.*src$')
+        attr = list(filter(r.match, image.attrs))
+        src = image[attr[0]]
+
+        #get src for all images
+        images_src.append(src)
+
+    return (images_src)
 
 
 
