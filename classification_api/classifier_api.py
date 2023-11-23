@@ -52,7 +52,7 @@ def add_clfn():
     flash('Record was successfully added')
     return redirect(url_for('classify'))
 
-@app.route("/api/insta_haircut_imgs", methods=["POST"])
+@app.route("/api/haircuts-from-insta", methods=["POST"])
 def return_image_srcs():
     hashtag = ''
     data = request.get_json()
@@ -62,8 +62,6 @@ def return_image_srcs():
         return (create_response({'srcs' : srcs}))
     else:
         return (create_response({'JSONError': 'Invalid JSON request format.'}, 400))
-
-
 
 @app.route("/api/face-detec", methods=["POST"])
 def face_detect():

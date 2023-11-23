@@ -99,7 +99,6 @@ const Camera = () => {
 
     const getHairPic = () => {
         let hair_pred = prediction.hair_prediction[0];
-        console.log(prediction);
         switch(hair_pred) {
             case 'curly':
                 return (curlyHair);
@@ -163,7 +162,6 @@ const Camera = () => {
             .then(response => {
                 if (Object.keys(response).length > 0) {
                     setFacePos(response['box']);
-                    //console.log('Face position:', response);
                     requestAnimationFrame(sendFrameToServer);
                 }
                 else {
@@ -197,24 +195,6 @@ const Camera = () => {
         
         ClassifierAPI.ClassifyImage(dataURL)
         .then(response => {
-            let photoTaken = photoRef.current;
-            let shapeChosen = shapePhotoRef.current;
-            let hairChosen = hairTypeRef.current;
-                        
-            shapeChosen.width = width;
-            shapeChosen.height = height;
-            photoTaken.width = width;
-            photoTaken.height = height;
-            hairChosen.width = hairImgSize;
-            hairChosen.height = hairImgSize;
-
-            let ctx = photoTaken.getContext('2d');
-            ctx.clearRect(0, 0, photoTaken.width, photoTaken.height);
-            let ctx2 = shapeChosen.getContext('2d');
-            ctx2.clearRect(0, 0, shapeChosen.width, shapeChosen.height);
-            let ctx3 = hairChosen.getContext('2d');
-            ctx3.clearRect(0, 0, hairChosen.width, hairChosen.height);
-
             if ('NoFaceError' in response) {
                 alert("No faces were detected. Please try again.")
             }
@@ -222,19 +202,82 @@ const Camera = () => {
                 setPrediction(response);
                 setClassified(true);
                 setPhotoTaken(true);
-
-                ctx.drawImage(video, 0, 0, width, height);
             }
         })
         .catch(error => console.log('error', error));
     }
 
+    const drawResult = () => {
+        const width = defCamWidth;
+        const height = defCamHeight;
+
+        let video = videoRef.current;
+
+        let photoTaken = photoRef.current;
+        let shapeChosen = shapePhotoRef.current;
+        let hairChosen = hairTypeRef.current;
+                    
+        shapeChosen.width = width;
+        shapeChosen.height = height;
+        photoTaken.width = width;
+        photoTaken.height = height;
+        hairChosen.width = hairImgSize;
+        hairChosen.height = hairImgSize;
+
+        let ctx = photoTaken.getContext('2d');
+        ctx.clearRect(0, 0, photoTaken.width, photoTaken.height);
+        let ctx2 = shapeChosen.getContext('2d');
+        ctx2.clearRect(0, 0, shapeChosen.width, shapeChosen.height);
+        let ctx3 = hairChosen.getContext('2d');
+        ctx3.clearRect(0, 0, hairChosen.width, hairChosen.height);
+
+        if (isClassified && !(facePos === '')) {
+            let photoDraw = photoRef.current;
+
+            photoDraw.width = width;
+            photoDraw.height = height;
+    
+            let ctxPhoto = photoDraw.getContext('2d');
+            ctxPhoto.drawImage(video, 0, 0, width, height);
+
+            const canv = shapePhotoRef.current;
+            const photo = document.querySelector('.photoRes')
+            canv.width = photo.clientWidth;
+            canv.height = photo.clientHeight;
+            
+            const ctx = canv.getContext('2d');
+            ctx.strokeStyle = 'red';
+            ctx.lineWidth = 2;
+            
+            const mainView = document.querySelector('.mainView')
+            const mainW = mainView.clientWidth;
+            const mainH = mainView.clientHeight;
+            const values = getFaceBox();
+
+            let x = defCamWidth * (values[0]/mainW);
+            let y = defCamHeight * (values[1]/mainH);
+            let w = defCamWidth * (values[2]/mainW);
+            let h = defCamHeight * (values[3]/mainH);
+
+            console.log(x, y, w, h)
+
+            let shapePath = getFaceShape();
+            let shapeImage = new Image();
+            shapeImage.src = shapePath;
+            shapeImage.onload = () => {
+                ctx.drawImage(shapeImage, x+modPos, y+modPos, w+modW, h+modH);
+            };
+            drawHairType();
+            setPhotoTaken(false);
+        }
+    }
+
     const toggleCam = () => {
         const camera = document.querySelector('.camera');
         const main = document.querySelector('.main');
-        const p = document.querySelector('.photo');
-        const f = document.querySelector('.faceShape');
-        const h = document.querySelector('.hairType');
+        const p = document.querySelector('.photoRes');
+        const f = document.querySelector('.faceShapeRes');
+        const h = document.querySelector('.hairTypeRes');
 
         if (camera && main && isExpanded == false) {
             camera.style.width = `${main.clientWidth}px`;
@@ -253,9 +296,9 @@ const Camera = () => {
 
     const minCam = () => {
         const camera = document.querySelector('.camera');
-        const p = document.querySelector('.photo');
-        const f = document.querySelector('.faceShape');
-        const h = document.querySelector('.hairType');
+        const p = document.querySelector('.photoRes');
+        const f = document.querySelector('.faceShapeRes');
+        const h = document.querySelector('.hairTypeRes');
 
         p.style.opacity = 1;
         f.style.opacity = 1;
@@ -280,31 +323,7 @@ const Camera = () => {
     }, [facePos])
 
     useEffect(() => {
-        if (isClassified && !(facePos === '')) {
-            const canv = shapePhotoRef.current;
-            const photo = document.querySelector('.photo')
-            canv.width = photo.clientWidth;
-            canv.height = photo.clientHeight;
-            
-            const ctx = canv.getContext('2d');
-            ctx.strokeStyle = 'red';
-            ctx.lineWidth = 2;
-            
-            const values = getFaceBox();
-            const x = values[0];
-            const y = values[1];
-            const w = values[2];
-            const h = values[3];
-
-            let shapePath = getFaceShape();
-            let shapeImage = new Image();
-            shapeImage.src = shapePath;
-            shapeImage.onload = () => {
-                ctx.drawImage(shapeImage, x+modPos, y+modPos, w+modW, h+modH);
-            };
-            drawHairType();
-            setPhotoTaken(false);
-        }
+        drawResult();
     }, [isClassified, photoTaken, prediction])
 
     useEffect(() => {
@@ -359,9 +378,9 @@ const Camera = () => {
                 <p style={{fontSize: '25px'}}>Face Prediction: {prediction.face_prediction}</p>
                 <p style={{fontSize: '25px'}}>Hair Prediction: {prediction.hair_prediction}</p>
                 <div className="photoContainer">
-                    <canvas className="photo" ref={photoRef}></canvas>
-                    <canvas className="faceShape" ref={shapePhotoRef}></canvas>
-                    <canvas className="hairType" ref={hairTypeRef}></canvas>
+                    <canvas className="photoRes" ref={photoRef}></canvas>
+                    <canvas className="faceShapeRes" ref={shapePhotoRef}></canvas>
+                    <canvas className="hairTypeRes" ref={hairTypeRef}></canvas>
                 </div>
             </div>
         </div>
