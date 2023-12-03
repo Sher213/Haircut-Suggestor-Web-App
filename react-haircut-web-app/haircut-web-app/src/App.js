@@ -2,7 +2,8 @@ import './App.scss';
 import { Routes, Route} from 'react-router-dom'
 import Layout from './components/Layout';
 import Home from './components/Home';
-import Camera from './components/Camera'
+import Classification from './components/Classification';
+import HairCutRecommendations from './components/HairCutRecommendations';
 
 
 function App() {
@@ -11,7 +12,8 @@ function App() {
     <Routes>
       <Route element={<Layout/>}>
         <Route path='/' index element={<Home/>} />
-        <Route path='/classify' index element={<Camera/>} />
+        <Route path='/classify' index element={<Classification/>} />
+        <Route path='/recommendations' index element={<HairCutRecommendations/>} />
       </Route>
     </Routes>
     </>

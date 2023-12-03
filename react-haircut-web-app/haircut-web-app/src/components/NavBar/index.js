@@ -8,7 +8,6 @@ const NavBar = () => {
     return (
         <div className="navbar">
             <Link className="logo" to='/'>
-
             </Link>
             <nav>
                 <NavLink className="nav home" exact="true" activateclassname="active" to="/">

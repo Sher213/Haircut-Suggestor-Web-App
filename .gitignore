@@ -2,6 +2,8 @@ vals.py
 node_modules/
 __pycache__/
 
+predictors/
+models/
 *.csv
 
 face-shape-classifier/images_in/
