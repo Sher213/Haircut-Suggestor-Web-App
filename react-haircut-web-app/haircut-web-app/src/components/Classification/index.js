@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import './index.scss';
 import ClassifierAPI from "../ClassifierAPI";
 import heartS from '../../assets/images/heart.png';
@@ -16,6 +17,8 @@ const Classification = () => {
     const modW = 100;
     const modH = 150;
 
+    const navigate = useNavigate();
+
     const defCamWidth = 500;
     const defCamHeight = 500;
     const hairImgSize = 500;
@@ -29,6 +32,8 @@ const Classification = () => {
     const [photoTaken, setPhotoTaken] = useState(false);
     const [isClassified, setClassified] = useState(false);
     const [needFaceMessage, setNeedFaceMessage] = useState(false);
+
+    const [loading, setLoading] = useState(true);
 
     const [prediction, setPrediction] = useState({
         face_prediction: '',
@@ -93,6 +98,9 @@ const Classification = () => {
     }
 
     const classify = () => {
+        setClassified(false);
+        setLoading(true);
+        
         const width = defCamWidth;
         const height = defCamHeight;
 
@@ -118,7 +126,9 @@ const Classification = () => {
                 setPhotoTaken(true);
             }
         })
-        .catch(error => console.log('error', error));
+        .catch(error => {
+            console.log('error', error)
+        });
     }
 
     const drawResult = () => {
@@ -170,8 +180,6 @@ const Classification = () => {
             let w = values[2];
             let h = values[3];
 
-            console.log(x, y, w, h)
-
             let shapePath = getFaceShape();
             let shapeImage = new Image();
             shapeImage.src = shapePath;
@@ -180,6 +188,7 @@ const Classification = () => {
             };
             drawHairType();
             setPhotoTaken(false);
+            setLoading(false);
         }
     }
 
@@ -189,6 +198,11 @@ const Classification = () => {
         .then(response => console.log(response))
         .catch(error => console.log(error))
     }
+
+    const handleRecommendationsClick = event => {
+        event.preventDefault();
+        navigate("/recommendations", {state: { prediction: prediction } });
+    };
 
     useEffect(() => {
         //console.log('facePos: ', facePos);
@@ -221,7 +235,7 @@ const Classification = () => {
                     prediction={prediction} 
                     faceShape={getFaceShape}/>
                 <div className="submit">
-                    <button className="takePhoto" onClick={classify} /*disabled={needFaceMessage}*/>Classify</button>
+                    <button className="takePhoto" onClick={classify} disabled={needFaceMessage}>Classify</button>
                     {needFaceMessage && (
                     <div style={{ paddingLeft: '30px', background: 'red', color: "yellow", marginTop: "10px" }}>
                         Need face before classifying.
@@ -233,13 +247,14 @@ const Classification = () => {
                 <p style={{fontSize: '25px'}}>Face Prediction: {prediction.face_prediction}</p>
                 <p style={{fontSize: '25px'}}>Hair Prediction: {prediction.hair_prediction}</p>
                 <div className="photoContainer">
+                    {isClassified && loading && <div className="loading-spinner"></div>}
                     <canvas className="photoRes" ref={photoRef}></canvas>
                     <canvas className="faceShapeRes" ref={shapePhotoRef}></canvas>
                     <canvas className="hairTypeRes" ref={hairTypeRef}></canvas>
                 </div>
             </div>
-            <form className="recommendations" action ="/recommendations">
-                <button type="submit">Recommendations</button>
+            <form className="recommendationsForm" onSubmit={handleRecommendationsClick}>
+                <button className="submitForRecommendations" type="submit">Recommendations</button>
             </form>
         </div>
     );

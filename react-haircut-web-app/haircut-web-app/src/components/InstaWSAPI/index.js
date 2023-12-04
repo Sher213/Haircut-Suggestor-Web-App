@@ -1,5 +1,5 @@
 export default class InstaWSAPI {
-    static getImages(hashtag) {
+    static GetImages(hashtag) {
         return fetch('/api/haircuts-from-insta', {
             'method': 'POST',
             headers : {'Content-Type' : 'application/json'},

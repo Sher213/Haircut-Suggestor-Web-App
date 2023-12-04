@@ -1,43 +1,49 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from 'react-router-dom';
 import './index.scss';
-import InstaWSAPI from '../InstaWSAPI'
+import RecommendationTab from '../RecommendationTab';
+import ClassifierAPI from "../ClassifierAPI";
 
 const HairCutRecommendations = () => {
-
-    const [images, setImages] = useState();
-
-    const getImagesFromAPI = (hashtag) => {
-        InstaWSAPI.getImages(hashtag)
-        .then(response => {
-            setImages(response.imgs);
-        })
-        .catch(error => console.log('error', error));
-    }
-
+    const location = useLocation();
+    const navigate = useNavigate();
+    const predictions = location.state.prediction;
+    
     useEffect(() => {
-        getImagesFromAPI('fadehaircut');
-    }, [])
-
-    useEffect(() => {
-        if (!images) {
-            console.log('Images is undefined');
-        } else {
-            console.log(images);
+        if (predictions.face_prediction == '' || predictions.hair_prediction == '') {
+            navigate("/");
         }
-    }, [images])
+    }, [predictions, navigate]);
+
+    const [recommendations, setRecommendations] = useState(null);
+
+
+    useEffect(() => {
+        const getRecommendationsFromAPI = async () => {
+            try {
+                const response = await ClassifierAPI.GetRecommendations(predictions);
+                setRecommendations(response.recommendations);
+            } catch (error) {
+                console.log('error', error);
+            }
+        };
+    
+        if (!(predictions.face_prediction === '' || predictions.hair_prediction === '')) {
+          getRecommendationsFromAPI();
+        }
+    }, [predictions]);
 
     return (
-        <div>
+        <div className="cont suggestions">
             <h2>Image Grid</h2>
-            {images !== undefined && (
-                <div className="image-grid">
-                    {images.map((src, index) => (
-                        <img key={index} src={src} alt={`Image ${index + 1}`} />
+            {recommendations && (
+                <div className="recommendation-tabs">
+                    {recommendations.map((recHashtag, index) => (
+                    <RecommendationTab key={index} hashtag={recHashtag} />
                     ))}
                 </div>
             )}
         </div>
-
     )
 }
 

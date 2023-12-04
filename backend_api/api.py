@@ -8,6 +8,7 @@ from io import BytesIO
 from clf import face_classification, hair_classification, detect_bounding_box
 from insta_web_scrape import get_insta_images
 import vals
+import pandas as pd
 
 app = Flask(__name__)
 
@@ -17,6 +18,23 @@ app.config['MYSQL_PASSWORD'] = vals.MYSQL_PW
 app.config['MYSQL_DB'] = vals.MYSQL_DB_API
 
 mysql = MySQL(app)
+
+r_table = pd.DataFrame(columns=['heart', 'oblong', 'oval', 'round', 'square'], index=['straight', 'wavy', 'curly'])
+r_table['heart']['straight'] = ['slickback', 'classicquiff', 'classicsidepart', 'longhairwithbangs', 'lob']
+r_table['oblong']['straight'] = ['sidesweptcrewcut', 'sidepart', 'brushup', 'chinlengthbob', 'layeredbangs']
+r_table['oval']['straight'] = ['brushback', 'pompadour', 'taperfadequiff', 'layeredlob', 'straightcut']
+r_table['round']['straight'] = ['sidesweptbrushup', 'spikyhair', 'baldfadeslickback', 'beachwaves', 'loosewaves']
+r_table['square']['straight'] = ['combover', 'buzzcut', 'highfade', 'sidesweptbangs', 'fringe']
+r_table['heart']['wavy'] = ['undercut', 'shortfauxhawk', 'longquiff', 'deepsidepart', 'loosewaves']
+r_table['oblong']['wavy'] = ['longsidepart', 'quiff', 'undercut', 'tighthighponytail', 'centerpartedlowbun']
+r_table['oval']['wavy'] = ['lowfade', 'longslickback', 'fringe', 'mediumlength', 'shortmessybob']
+r_table['round']['wavy'] = ['highskinfade', 'pompadour', 'quiff', 'beachwaves', 'loosewaves']
+r_table['square']['wavy'] = ['texturedcombover', 'buzzcut', 'crewcut', 'sidesweptbangs', 'fringe']
+r_table['heart']['curly'] = [ 'cubmane', 'texturedcrew', 'bobwithsidebangs', 'curlylayeredmediumlength']
+r_table['oblong']['curly'] = ['shortafro', 'layeredlonghair', 'mediumcurlycombover', 'messyshag']
+r_table['oval']['curly'] = ['wavydropfade', 'curlyslickedback', 'bobwithbangs', 'balayagebob']
+r_table['round']['curly'] = ['pompadour', 'sidesweptcurls', 'curlyfringe', 'longvcut', 'mediumucut']
+r_table['square']['curly'] = ['pompadour', 'sleektemplefade', 'highboblowfade', 'collarbonewavy', 'shoulderlengthshag']
 
 def create_response(res, status):
     '''Creates response for tighter code
@@ -31,6 +49,9 @@ def create_response(res, status):
         mimetype='application/json'
     )
     return (response)
+
+def get_recommendations(face, hair):
+    return 0
 
 @app.route('/api/create_db', methods=["POST"])
 def index():
@@ -52,6 +73,18 @@ def add_clfn():
     clfn = (request.form['faceType'], request.form['hairType'])
     flash('Record was successfully added')
     return redirect(url_for('classify'))
+
+@app.route("/api/recommendations", methods=["POST"])
+def return_recommendations():
+    predictions = request.get_json()
+
+    if not (len(predictions) == 0 or predictions == {}):
+        face = predictions['face_prediction'][0]
+        hair = predictions['hair_prediction'][0]
+        recs = r_table[face][hair]
+        return (create_response({'recommendations' : recs}, 200))
+    else:
+        return (create_response({'JSONError': 'Invalid JSON request format.'}, 400))
 
 @app.route("/api/haircuts-from-insta", methods=["POST"])
 def return_image_srcs():

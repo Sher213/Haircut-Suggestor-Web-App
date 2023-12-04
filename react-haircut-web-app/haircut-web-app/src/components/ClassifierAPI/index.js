@@ -19,6 +19,16 @@ export default class ClassifierAPI {
         .catch(error => console.log(error))
     }
 
+    static GetRecommendations(prediction) {
+        return fetch('/api/recommendations', {
+            'method': 'POST',
+            headers : {'Content-Type' : 'application/json'},
+            body : JSON.stringify(prediction),
+        })
+        .then(response => response.json())
+        .catch(error => console.log(error))
+    }
+
     static CreateDB(clfns){
         return fetch('/', {
             'method' : 'POST',

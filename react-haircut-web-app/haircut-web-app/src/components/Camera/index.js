@@ -9,7 +9,8 @@ const Camera = ({onFacePosUpdate, onVideoRef, modPos, modW, modH, defCamWidth, d
     const videoRef = useRef();
     const shapeVideoRef = useRef();
 
-    const [isExpanded, setExpanded] = useState(false);
+    const [isExpanded, setIsExpanded] = useState(false);
+    const [isCentered, setIsCentered] = useState(false);
     const [facePos, setFacePos] = useState('');
 
     const getFaceBox = () => {
@@ -94,17 +95,23 @@ const Camera = ({onFacePosUpdate, onVideoRef, modPos, modW, modH, defCamWidth, d
             .then(response => {
                 if (Object.keys(response).length > 0) {
                     setFacePos(response['box']);
-                    requestAnimationFrame(sendFrameToServer);
+                    if (video.srcObject != null){
+                        requestAnimationFrame(sendFrameToServer);
+                    }
                 }
                 else {
                     console.log('No faces detected.')
                     setFacePos('')
-                    requestAnimationFrame(sendFrameToServer);
+                    if (video.srcObject != null){
+                        requestAnimationFrame(sendFrameToServer);
+                    }
                 }
             })
             .catch(error => {
                 console.error('Error sending frame to server:', error);
-                requestAnimationFrame(sendFrameToServer);
+                if (video.srcObject != null){
+                    requestAnimationFrame(sendFrameToServer);
+                }
             });
         };
         sendFrameToServer();
@@ -125,7 +132,7 @@ const Camera = ({onFacePosUpdate, onVideoRef, modPos, modW, modH, defCamWidth, d
             f.style.opacity = 0;
             h.style.opacity = 0;
 
-            setExpanded(true);       
+            setIsExpanded(true);       
         }
         else if (isExpanded == true) {
             minCam();
@@ -145,7 +152,7 @@ const Camera = ({onFacePosUpdate, onVideoRef, modPos, modW, modH, defCamWidth, d
         if (camera) {
             camera.style.width = `${defCamWidth}px`;
             camera.style.height = `${defCamHeight}px`;
-            setExpanded(false);
+            setIsExpanded(false);
         }
     };
 
