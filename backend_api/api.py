@@ -88,15 +88,17 @@ def return_recommendations():
 
 @app.route("/api/haircuts-from-insta", methods=["POST"])
 def return_image_srcs():
-    hashtag = request.get_json()
-    if not (hashtag == ''):
-        b64_imgs = []
-        srcs = get_insta_images(hashtag)
+    hashtags = request.get_json()
 
-        for src in srcs:
-            res = requests.get(src)
-            if res.status_code == 200:
-                b64_imgs.append("data:image/jpeg;base64," + str(base64.b64encode(res.content))[2:-1])
+    if not (hashtags == '' or hashtags is None):
+        b64_imgs = []
+
+        for tag in hashtags:
+            srcs = get_insta_images(tag)
+            for src in srcs:
+                res = requests.get(src)
+                if res.status_code == 200:
+                    b64_imgs.append("data:image/jpeg;base64," + str(base64.b64encode(res.content))[2:-1])
 
         return (create_response({'imgs' : b64_imgs}, 200))
     else:

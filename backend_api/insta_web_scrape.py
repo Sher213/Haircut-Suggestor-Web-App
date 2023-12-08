@@ -25,26 +25,28 @@ def get_insta_images(hashtag):
     Returns:
         images (list): List of images encoded in base64
     '''
+    try:
+        driver.get("https://www.instagram.com/explore/tags/" + str(hashtag) + "/")
+        #wait for the element
+        WebDriverWait(driver, WEB_PAUSE_TIME).until(EC.presence_of_all_elements_located((By.CLASS_NAME, '_aagv')))
+        #pass page source to beautiful soup
+        soup = BeautifulSoup(driver.page_source, "html.parser")
+        images = soup.findAll(class_= 'x5yr21d xu96u03 x10l6tqk x13vifvy x87ps6o xh8yej3')
+        
+        images_src = []
 
-    driver.get("https://www.instagram.com/explore/tags/" + str(hashtag) + "/")
-    #wait for the element
-    WebDriverWait(driver, WEB_PAUSE_TIME).until(EC.presence_of_all_elements_located((By.CLASS_NAME, '_aagv')))
-    #pass page source to beautiful soup
-    soup = BeautifulSoup(driver.page_source, "html.parser")
-    images = soup.findAll(class_= 'x5yr21d xu96u03 x10l6tqk x13vifvy x87ps6o xh8yej3')
-    
-    images_src = []
+        for image in images:
+            #regex to find the src attribute
+            r = re.compile('.*src$')
+            attr = list(filter(r.match, image.attrs))
+            src = image[attr[0]]
 
-    for image in images:
-         #regex to find the src attribute
-        r = re.compile('.*src$')
-        attr = list(filter(r.match, image.attrs))
-        src = image[attr[0]]
+            #get src for all images
+            images_src.append(src)
 
-        #get src for all images
-        images_src.append(src)
-
-    return (images_src)
+        return (images_src)
+    except Exception as e:
+        print(repr(e))
 
 
 

@@ -1,24 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import InstaWSAPI from '../InstaWSAPI';
+import React, { useEffect } from 'react';
 
-const RecommendationTab = ({ hashtag }) => {
-    const [images, setImages] = useState(null);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        const getImagesFromAPI = async (tag) => {
-            try {
-                const response = await InstaWSAPI.GetImages(tag);
-                setImages(response.imgs);
-                setLoading(false);
-                console.log("CLEAR");
-            } catch (error) {
-                console.log('error', error);
-                setLoading(false);
-            }
-        };
-        getImagesFromAPI(hashtag);
-    }, []);
+const RecommendationTab = ({ hashtag, images }) => {
 
     useEffect(() => {
         console.log(images);
@@ -27,7 +9,6 @@ const RecommendationTab = ({ hashtag }) => {
     return (
         <div className="recommendation-tab">
             <h2>{`#${hashtag}`}</h2>
-            {loading && <div className="loading-spinner"></div>}
             {images && (
                 <div className="image-grid">
                 {images.map((src, index) => (
