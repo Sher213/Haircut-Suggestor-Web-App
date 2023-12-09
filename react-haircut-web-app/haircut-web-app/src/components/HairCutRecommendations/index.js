@@ -14,9 +14,10 @@ const HairCutRecommendations = () => {
     const [recommendationHashtags, setRecommendationHashtags] = useState(null);
     const [activeTabIndex, setActiveTabIndex] = useState(0);
     const [hairStyleDescs, setHairStyleDescs] = useState('');
+    const [loading, setLoading] = useState(true);
     
     useEffect(() => {
-        if (predictions.face_prediction == '' || predictions.hair_prediction == '') {
+        if (predictions.face_prediction === '' || predictions.hair_prediction === '') {
             navigate("/");
         }
     }, [predictions, navigate]);
@@ -63,15 +64,16 @@ const HairCutRecommendations = () => {
         getHairStyleDesc()
     }, [recommendationHashtags])
 
-    useEffect(() => {
-        console.log(hairStyleDescs);
-    }, [hairStyleDescs])
+    useEffect(() =>{
+        if (recommendationHashtags) { setLoading(false); }
+    }, [recommendationHashtags])
 
     return (
-        <div className="cont suggestions">
+        <div className="cont recommendations">
             <h2>Your haircut suggestions based on your face: {predictions.face_prediction} and hair: {predictions.hair_prediction}</h2>
             {recommendationHashtags && (
                 <div className="recommendation-tabs">
+                    {loading && <div className="loading-spinner"></div>}
                     <div className="tab-buttons">
                         {recommendationHashtags.map((recHashtag, index) => (
                             <button
@@ -98,8 +100,8 @@ const HairCutRecommendations = () => {
                             key={index}
                             className={`tab-content ${index === activeTabIndex ? 'active-content' : 'inactive-content'}`}
                         >
-                            {index === activeTabIndex && (
-                            <RecommendationTab hashtag={recHashtag} images={imagesSubset} hairstyleDesc={hairStyleDescs} />
+                            {index === activeTabIndex && hairStyleDescs && (
+                            <RecommendationTab hashtag={recHashtag} images={imagesSubset} hairStyleDesc={hairStyleDescs.descriptions[index]} />
                             )}
                         </div>
                     );

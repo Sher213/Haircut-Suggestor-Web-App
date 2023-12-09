@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faInstagram } from '@fortawesome/free-brands-svg-icons'
+import './index.scss'
 
-const RecommendationTab = ({ hashtag, images, hairstyleDesc }) => {
+const RecommendationTab = ({ hashtag, images, hairStyleDesc }) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -10,23 +11,30 @@ const RecommendationTab = ({ hashtag, images, hairstyleDesc }) => {
         
     }, [images])
 
+    useEffect(() => {
+        console.log(hairStyleDesc);
+    }, [hairStyleDesc])
+
     return (
-        <div className="recommendation-tab">
-            <h2>The {`#${hashtag}`}</h2>
-            <h3>See more on &nbsp;
-                <a target="_blank" href={`https://www.instagram.com/explore/tags/${hashtag}/top/`}>
-                    <FontAwesomeIcon icon={faInstagram} color='blue'/></a>
-            </h3>
-            {loading && <div className="loading-spinner"></div>}
-            {images && (
-                <div className="image-grid">
-                {images.map((src, index) => (
-                    <a key={index} target="_blank" href={`https://www.instagram.com/explore/tags/${hashtag}/top/`}>
-                        <img className='insta-img' key={index} src={src} alt={`Image ${index + 1}`} />
-                    </a>
-                ))}
-                </div>
-            )}
+        <div className='recommendation-container'>
+            <div className="recommendation-tab">
+                <h2>The {`#${hashtag}`}</h2>
+                <h3>See more on &nbsp;
+                    <a target="_blank" href={`https://www.instagram.com/explore/tags/${hashtag}/top/`}>
+                        <FontAwesomeIcon icon={faInstagram} color='blue'/></a>
+                </h3>
+                {loading && <div className="loading-spinner"></div>}
+                {images && (
+                    <div className="image-grid">
+                    {images.map((src, index) => (
+                        <a key={index} target="_blank" href={`https://www.instagram.com/explore/tags/${hashtag}/top/`}>
+                            <img className='insta-img' key={index} src={src} alt={`Image ${index + 1}`} />
+                        </a>
+                    ))}
+                    </div>
+                )}
+            </div>
+            <p>{hairStyleDesc}</p>
         </div>
     );
 };

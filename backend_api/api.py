@@ -90,7 +90,7 @@ def get_hairstyle_descs():
                 if first.replace(' ', '').lower() == hairstyle:
                     descriptions.append(second)
 
-        return (create_response({'recommendations' : descriptions}, 200))
+        return (create_response({'descriptions' : descriptions}, 200))
     else:
         return (create_response({'JSONError': 'Invalid JSON request format.'}, 400))
 
