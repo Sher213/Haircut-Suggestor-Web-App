@@ -10,9 +10,10 @@ const HairCutRecommendations = () => {
     const navigate = useNavigate();
     const predictions = location.state.prediction;
 
-    const [allImages, setAllImages] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [recommendationsHashtag, setRecommendationsHashtag] = useState(null);
+    const [images, setImages] = useState(null);
+    const [recommendationHashtags, setRecommendationHashtags] = useState(null);
+    const [activeTabIndex, setActiveTabIndex] = useState(0);
+    const [hairStyleDescs, setHairStyleDescs] = useState('');
     
     useEffect(() => {
         if (predictions.face_prediction == '' || predictions.hair_prediction == '') {
@@ -24,7 +25,7 @@ const HairCutRecommendations = () => {
         const getRecommendationsFromAPI = async () => {
             try {
                 const response = await ClassifierAPI.GetRecommendations(predictions);
-                setRecommendationsHashtag(response.recommendations);
+                setRecommendationHashtags(response.recommendations);
             } catch (error) {
                 console.log('error', error);
             }
@@ -39,40 +40,74 @@ const HairCutRecommendations = () => {
         const getImagesFromAPI = async (tags) => {
             try {
                 const response = await InstaWSAPI.GetImages(tags);
-                setAllImages(response.imgs);
-                console.log("CLEAR");
+                setImages(response.imgs);
             } catch (error) {
                 console.log('error', error);
             }
         };
 
-        getImagesFromAPI(recommendationsHashtag);
-    }, [recommendationsHashtag]);
+        getImagesFromAPI(recommendationHashtags);
+    }, [recommendationHashtags]);
 
     useEffect(() => {
-        if (allImages) {setLoading(false);}
-        
-    }, [allImages])
+        const getHairStyleDesc = async () => {
+            try {
+                const response = await ClassifierAPI.GetHairStyleDescriptions(recommendationHashtags);
+                setHairStyleDescs(response);
+            }
+            catch (error){
+                console.log('error', error)
+            }
+        }
+
+        getHairStyleDesc()
+    }, [recommendationHashtags])
+
+    useEffect(() => {
+        console.log(hairStyleDescs);
+    }, [hairStyleDescs])
 
     return (
         <div className="cont suggestions">
-            <h2>Image Grid</h2>
-            {loading && <div className="loading-spinner"></div>}
-            {recommendationsHashtag && allImages && (
+            <h2>Your haircut suggestions based on your face: {predictions.face_prediction} and hair: {predictions.hair_prediction}</h2>
+            {recommendationHashtags && (
                 <div className="recommendation-tabs">
-                {recommendationsHashtag.map((recHashtag, index) => {
-                    const startIndex = index * 9;
-                    const endIndex = startIndex + 9;
-                    const imagesSubset = allImages.slice(startIndex, endIndex);
-
+                    <div className="tab-buttons">
+                        {recommendationHashtags.map((recHashtag, index) => (
+                            <button
+                                key={index}
+                                className={index === activeTabIndex ? 'active-tab' : ''}
+                                onClick={() => setActiveTabIndex(index)}
+                            >
+                                {recHashtag}
+                            </button>
+                        ))}
+                    </div>
+                    {recommendationHashtags.map((recHashtag, index) => {
+                        var imagesSubset = null;
+                        if (images) {
+                        const startIndex = index * 9;
+                        const endIndex = startIndex + 9;
+                        imagesSubset = images.slice(startIndex, endIndex);
+                        } else {
+                        imagesSubset = null;
+                        }
+    
                     return (
-                        <RecommendationTab key={index} hashtag={recHashtag} images={imagesSubset} />
+                        <div
+                            key={index}
+                            className={`tab-content ${index === activeTabIndex ? 'active-content' : 'inactive-content'}`}
+                        >
+                            {index === activeTabIndex && (
+                            <RecommendationTab hashtag={recHashtag} images={imagesSubset} hairstyleDesc={hairStyleDescs} />
+                            )}
+                        </div>
                     );
                 })}
                 </div>
             )}
         </div>
-    )
+    );
 }
 
 export default HairCutRecommendations;

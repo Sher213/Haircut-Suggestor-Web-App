@@ -1,14 +1,23 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faInstagram } from '@fortawesome/free-brands-svg-icons'
 
-const RecommendationTab = ({ hashtag, images }) => {
+const RecommendationTab = ({ hashtag, images, hairstyleDesc }) => {
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        console.log(images);
+        if (images) {setLoading(false);}
+        
     }, [images])
 
     return (
         <div className="recommendation-tab">
-            <h2>{`#${hashtag}`}</h2>
+            <h2>The {`#${hashtag}`}</h2>
+            <h3>See more on &nbsp;
+                <a target="_blank" href={`https://www.instagram.com/explore/tags/${hashtag}/top/`}>
+                    <FontAwesomeIcon icon={faInstagram} color='blue'/></a>
+            </h3>
+            {loading && <div className="loading-spinner"></div>}
             {images && (
                 <div className="image-grid">
                 {images.map((src, index) => (

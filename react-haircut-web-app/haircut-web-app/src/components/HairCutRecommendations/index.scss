@@ -1,7 +1,11 @@
 .suggestions {
     display: flex;
     flex-direction: column;
-    align-items: center;
+
+    .recommendation-tabs {
+        display: flex;
+        flex-direction: row;
+    }
 
     .image-grid {
         width: 50%;

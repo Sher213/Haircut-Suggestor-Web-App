@@ -23,14 +23,14 @@ r_table = pd.DataFrame(columns=['heart', 'oblong', 'oval', 'round', 'square'], i
 r_table['heart']['straight'] = ['slickback', 'classicquiff', 'classicsidepart', 'longhairwithbangs', 'lob']
 r_table['oblong']['straight'] = ['sidesweptcrewcut', 'sidepart', 'brushup', 'chinlengthbob', 'layeredbangs']
 r_table['oval']['straight'] = ['brushback', 'pompadour', 'taperfadequiff', 'layeredlob', 'straightcut']
-r_table['round']['straight'] = ['sidesweptbrushup', 'spikyhair', 'baldfadeslickback', 'beachwaves', 'loosewaves']
+r_table['round']['straight'] = ['sidesweptbrushup', 'baldfadeslickback', 'beachwaves', 'loosewaves']
 r_table['square']['straight'] = ['combover', 'buzzcut', 'highfade', 'sidesweptbangs', 'fringe']
-r_table['heart']['wavy'] = ['undercut', 'shortfauxhawk', 'longquiff', 'deepsidepart', 'loosewaves']
-r_table['oblong']['wavy'] = ['longsidepart', 'quiff', 'undercut', 'tighthighponytail', 'centerpartedlowbun']
-r_table['oval']['wavy'] = ['lowfade', 'longslickback', 'fringe', 'mediumlength', 'shortmessybob']
+r_table['heart']['wavy'] = ['undercut', 'longquiff', 'deepsidepart', 'loosewaves']
+r_table['oblong']['wavy'] = ['longsidepart', 'classicquiff', 'undercut', 'tighthighponytail', 'centerpartedlowbun']
+r_table['oval']['wavy'] = ['lowfade', 'slickback', 'fringe', 'mediumlength', 'shortmessybob']
 r_table['round']['wavy'] = ['highskinfade', 'pompadour', 'quiff', 'beachwaves', 'loosewaves']
 r_table['square']['wavy'] = ['texturedcombover', 'buzzcut', 'crewcut', 'sidesweptbangs', 'fringe']
-r_table['heart']['curly'] = [ 'cubmane', 'texturedcrew', 'bobwithsidebangs', 'curlylayeredmediumlength']
+r_table['heart']['curly'] = ['texturedcrew', 'bobwithsidebangs', 'curlylayeredmediumlength']
 r_table['oblong']['curly'] = ['shortafro', 'layeredlonghair', 'mediumcurlycombover', 'messyshag']
 r_table['oval']['curly'] = ['wavydropfade', 'curlyslickedback', 'bobwithbangs', 'balayagebob']
 r_table['round']['curly'] = ['pompadour', 'sidesweptcurls', 'curlyfringe', 'longvcut', 'mediumucut']
@@ -74,6 +74,26 @@ def add_clfn():
     flash('Record was successfully added')
     return redirect(url_for('classify'))
 
+@app.route('/api/get_hairstyle_desc', methods=["POST"])
+def get_hairstyle_descs():
+    hairstyles = request.get_json()
+
+    if not(len(hairstyles) == 0 or hairstyles == {}):
+        descriptions = []
+        for hairstyle in hairstyles:
+            temp = ''
+            with open('hairstyles.txt', 'r') as file:
+                temp = file.readlines()
+
+            for line in temp:
+                first, second = line.split(':')
+                if first.replace(' ', '').lower() == hairstyle:
+                    descriptions.append(second)
+
+        return (create_response({'recommendations' : descriptions}, 200))
+    else:
+        return (create_response({'JSONError': 'Invalid JSON request format.'}, 400))
+
 @app.route("/api/recommendations", methods=["POST"])
 def return_recommendations():
     predictions = request.get_json()
@@ -82,6 +102,7 @@ def return_recommendations():
         face = predictions['face_prediction'][0]
         hair = predictions['hair_prediction'][0]
         recs = r_table[face][hair]
+        
         return (create_response({'recommendations' : recs}, 200))
     else:
         return (create_response({'JSONError': 'Invalid JSON request format.'}, 400))
