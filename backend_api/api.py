@@ -7,8 +7,9 @@ import numpy as np
 from io import BytesIO
 from clf import face_classification, hair_classification, detect_bounding_box
 from insta_web_scrape import get_insta_images
-import vals
 import pandas as pd
+import vals
+import placeholder
 
 app = Flask(__name__)
 
@@ -50,9 +51,6 @@ def create_response(res, status):
     )
     return (response)
 
-def get_recommendations(face, hair):
-    return 0
-
 @app.route('/api/create_db', methods=["POST"])
 def index():
     # Create the database cursor within a route function
@@ -74,11 +72,11 @@ def add_clfn():
     flash('Record was successfully added')
     return redirect(url_for('classify'))
 
-@app.route('/api/get_hairstyle_desc', methods=["POST"])
+@app.route('/api/get_haircut_descs', methods=["POST"])
 def get_hairstyle_descs():
     hairstyles = request.get_json()
 
-    if not(len(hairstyles) == 0 or hairstyles == {}):
+    if not( hairstyles is None or len(hairstyles) == 0 or hairstyles == {}):
         descriptions = []
         for hairstyle in hairstyles:
             temp = ''
@@ -94,7 +92,7 @@ def get_hairstyle_descs():
     else:
         return (create_response({'JSONError': 'Invalid JSON request format.'}, 400))
 
-@app.route("/api/recommendations", methods=["POST"])
+@app.route("/api/haircut_recommendations", methods=["POST"])
 def return_recommendations():
     predictions = request.get_json()
 
@@ -111,16 +109,18 @@ def return_recommendations():
 def return_image_srcs():
     hashtags = request.get_json()
 
-    if not (hashtags == '' or hashtags is None):
+    if not (hashtags == '' or hashtags is None or hashtags == {}):
         b64_imgs = []
-
         for tag in hashtags:
             srcs = get_insta_images(tag)
-            for src in srcs:
-                res = requests.get(src)
-                if res.status_code == 200:
-                    b64_imgs.append("data:image/jpeg;base64," + str(base64.b64encode(res.content))[2:-1])
-
+            if (len(srcs) >= 1):
+                for src in srcs:
+                    res = requests.get(src)
+                    if res.status_code == 200:
+                        b64_imgs.append({tag : "data:image/jpeg;base64," + str(base64.b64encode(res.content))[2:-1]})
+            else:
+                for i in (range(9)):
+                    b64_imgs.append({tag : placeholder.placeholder_b64})
         return (create_response({'imgs' : b64_imgs}, 200))
     else:
         return (create_response({'JSONError': 'Invalid JSON request format.'}, 400))

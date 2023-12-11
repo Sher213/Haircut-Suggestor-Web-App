@@ -47,6 +47,7 @@ def get_insta_images(hashtag):
         return (images_src)
     except Exception as e:
         print(repr(e))
+        return([])
 
 
 

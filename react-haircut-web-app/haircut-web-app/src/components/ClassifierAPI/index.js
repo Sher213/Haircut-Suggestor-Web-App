@@ -19,8 +19,8 @@ export default class ClassifierAPI {
         .catch(error => console.log(error))
     }
 
-    static GetRecommendations(prediction) {
-        return fetch('/api/recommendations', {
+    static GetHaircutRecommendations(prediction) {
+        return fetch('/api/haircut_recommendations', {
             'method': 'POST',
             headers : {'Content-Type' : 'application/json'},
             body : JSON.stringify(prediction),
@@ -29,8 +29,8 @@ export default class ClassifierAPI {
         .catch(error => console.log(error))
     }
 
-    static GetHairStyleDescriptions(hairstyle) {
-        return fetch('/api/get_hairstyle_desc', {
+    static GetHaircutDescriptions(hairstyle) {
+        return fetch('/api/get_haircut_descs', {
             'method': 'POST',
             headers : {'Content-Type' : 'application/json'},
             body : JSON.stringify(hairstyle),

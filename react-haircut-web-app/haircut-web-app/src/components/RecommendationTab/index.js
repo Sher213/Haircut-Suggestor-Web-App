@@ -8,12 +8,7 @@ const RecommendationTab = ({ hashtag, images, hairStyleDesc }) => {
 
     useEffect(() => {
         if (images) {setLoading(false);}
-        
     }, [images])
-
-    useEffect(() => {
-        console.log(hairStyleDesc);
-    }, [hairStyleDesc])
 
     return (
         <div className='recommendation-container'>

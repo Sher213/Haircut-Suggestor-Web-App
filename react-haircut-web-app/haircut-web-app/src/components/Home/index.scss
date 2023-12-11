@@ -1,4 +1,49 @@
 .home-page{
-    background-color: aqua;
-    width: fit-content;
+    
+    .about {
+        margin-left: 5%;
+        width: 30vw;
+
+        .get-started {
+            margin-top: 30px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+
+            .classify {
+                padding: 5px 10px;
+                background-color: beige;
+                text-decoration: none;
+                color: teal;
+                font-weight: bold;
+                font-size: 25px;
+                letter-spacing: 2px;
+                border: 3px solid teal;
+    
+                .icon {
+                    padding-left: 15px;
+                }
+            }
+        }
+    }
+    .logo-cont {
+        color: grey;
+        margin-top: 10vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        .logo-display {
+            background-color: #6E6E6E;
+            width: 100%;
+            font-size: 100px;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            .logo{
+                padding: 0px 50px;
+            }
+        }
+    }
+    
 }
