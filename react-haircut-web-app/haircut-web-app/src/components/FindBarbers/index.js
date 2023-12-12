@@ -112,7 +112,7 @@ const FindBarbers = () => {
     }, [userLocation]);
 
     return (
-        <div>
+        <div className="cont page find-barber-container">
             <h3>Find Barbers Near You</h3>
             <div id="map" style={{ height: "600px", width: "100%" }}></div>
         </div>

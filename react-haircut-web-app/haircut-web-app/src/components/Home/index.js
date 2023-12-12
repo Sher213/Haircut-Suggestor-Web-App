@@ -6,7 +6,7 @@ import { faInstagram, faGoogle, faPython, faReact, faYoutube, faChrome } from '@
 
 const Home = () => {
     return (
-        <div className='cont home-page'>
+        <div className='cont page home-page'>
             <div className='about'>
                 <h1>Welcome to the New You.</h1>
                 <p>Revolutionizing the hair makeover experience. Know what you want before you go in.
