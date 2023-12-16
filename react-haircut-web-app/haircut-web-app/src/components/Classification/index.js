@@ -12,7 +12,7 @@ import straightHair from '../../assets/images/straight.png';
 import curlyHair from '../../assets/images/curly.png';
 import Camera from '../Camera';
 
-const Classification = () => { 
+const Classification = () => {
     const modPos = -50;
     const modW = 100;
     const modH = 150;

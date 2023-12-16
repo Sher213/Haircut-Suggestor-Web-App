@@ -6,7 +6,7 @@
 }
 
 .left {
-    position: absolute;
+    position: relative;
     background-color: blue;
     width: 30%;
     height: 100%;
@@ -21,6 +21,7 @@
     background-color: cadetblue;
     height: 500px;
     width: 500px;
+    z-index: 1;
 
     video, canvas {
         position: absolute;

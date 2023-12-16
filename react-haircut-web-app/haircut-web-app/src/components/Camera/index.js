@@ -125,8 +125,11 @@ const Camera = ({onFacePosUpdate, onVideoRef, modPos, modW, modH, defCamWidth, d
         const h = document.querySelector('.hairTypeRes');
 
         if (camera && main && isExpanded == false) {
-            camera.style.width = `${main.clientWidth}px`;
-            camera.style.height = `${main.clientHeight - 55}px`; 
+            camera.style.width = '90vw';
+            camera.style.height = '90vh';
+            camera.style.position = 'absolute';
+            camera.style.top = '0';
+            camera.style.left = '5vw';
 
             p.style.opacity = 0;
             f.style.opacity = 0;
@@ -152,6 +155,7 @@ const Camera = ({onFacePosUpdate, onVideoRef, modPos, modW, modH, defCamWidth, d
         if (camera) {
             camera.style.width = `${defCamWidth}px`;
             camera.style.height = `${defCamHeight}px`;
+            camera.style.position = 'relative';
             setIsExpanded(false);
         }
     };
