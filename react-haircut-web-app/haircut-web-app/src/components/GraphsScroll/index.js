@@ -8,7 +8,7 @@ import { Data } from '../../utils/Data';
 
 Chart.register(CategoryScale);
 
-const Graph = () => {
+const GraphsScroll = () => {
 
     const [chartData, setChartData] = useState({
         labels: Data.map((data) => data.shape),
@@ -46,4 +46,4 @@ const Graph = () => {
     )
 }
 
-export default Graph;
+export default GraphsScroll;

@@ -40,7 +40,7 @@ export default class ClassifierAPI {
     }
 
     static CreateDB(clfns){
-        return fetch('/', {
+        return fetch('/api/create_db', {
             'method' : 'POST',
             headers : {'Content-Type' : 'application/json'},
             body : clfns

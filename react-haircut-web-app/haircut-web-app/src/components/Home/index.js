@@ -8,7 +8,7 @@ import oblong from '../../assets/images/oblong-example-home.png';
 import oval from '../../assets/images/oval-example-home.png';
 import round from '../../assets/images/round-example-home.png';
 import square from '../../assets/images/square-example-home.png';
-import Graph from '../Graph';
+import Graph from '../GraphsScroll';
 import { useEffect, useState } from 'react'
 
 const Home = () => {
