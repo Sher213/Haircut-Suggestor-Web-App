@@ -1,10 +1,10 @@
 import React, { useRef, useEffect, useState } from "react";
 import './index.scss';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faExpand} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faExpand, faMinimize, faMailForward } from '@fortawesome/free-solid-svg-icons';
 import ClassifierAPI from "../ClassifierAPI";
 
-const Camera = ({onFacePosUpdate, onVideoRef, modPos, modW, modH, defCamWidth, defCamHeight, isClassified, prediction, faceShape}) => {
+const Camera = ({ onFacePosUpdate, onVideoRef, modPos, modW, modH, defCamWidth, defCamHeight, isClassified, prediction, faceShape, onButtonClick }) => {
 
     const videoRef = useRef();
     const shapeVideoRef = useRef();
@@ -202,9 +202,14 @@ const Camera = ({onFacePosUpdate, onVideoRef, modPos, modW, modH, defCamWidth, d
         <div className="camera">
             <video className="mainView"ref={videoRef}></video>
             <canvas ref={shapeVideoRef}></canvas>
-            <button className="expandView" onClick={toggleCam}>
-                <FontAwesomeIcon icon={faExpand} color='lime'></FontAwesomeIcon>
-            </button>
+            <div className="take-photo-container">
+                <button className="expandView" onClick={toggleCam}>
+                    <FontAwesomeIcon icon={isExpanded ? faMinimize : faExpand } color='lime'></FontAwesomeIcon>
+                </button>
+                <button onClick={onButtonClick} className="take-photo-button">
+                    <FontAwesomeIcon icon={faMailForward} color='lime'></FontAwesomeIcon>
+                </button>
+            </div>
         </div>
     )
 }

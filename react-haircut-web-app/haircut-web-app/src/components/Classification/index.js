@@ -97,6 +97,11 @@ const Classification = () => {
         };
     }
 
+    const handleButtonClick = () => {
+        classify()
+    }
+
+
     const classify = () => {
         setClassified(false);
         setLoading(true);
@@ -233,9 +238,9 @@ const Classification = () => {
                     defCamHeight={defCamHeight}
                     isClassified={isClassified} 
                     prediction={prediction} 
-                    faceShape={getFaceShape}/>
-                <div className="submit">
-                    <button className="takePhoto" onClick={classify} disabled={needFaceMessage}>Classify</button>
+                    faceShape={getFaceShape}
+                    onButtonClick={handleButtonClick}/>
+                <div className="aler-message-container">
                     {needFaceMessage && (
                     <div style={{ paddingLeft: '30px', background: 'red', color: "yellow", marginTop: "10px" }}>
                         Need face before classifying.

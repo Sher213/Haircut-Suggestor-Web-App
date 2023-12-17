@@ -8,6 +8,7 @@ import oblong from '../../assets/images/oblong-example-home.png';
 import oval from '../../assets/images/oval-example-home.png';
 import round from '../../assets/images/round-example-home.png';
 import square from '../../assets/images/square-example-home.png';
+import Graph from '../Graph';
 import { useEffect, useState } from 'react'
 
 const Home = () => {
@@ -49,7 +50,7 @@ const Home = () => {
                         </NavLink>
                     </div>
                 </div>
-                <div className='showcase'>
+                <div className='infographics-container'>
                     {[
                     heart, oblong, oval, round, square
                     ].map((image, index) => (
@@ -60,6 +61,9 @@ const Home = () => {
                         alt={`Example ${index + 1}`}
                     />
                     ))}
+                    <div className='graph-container'>
+                        <Graph/>
+                    </div>
                 </div>
             </div>
             <div className='logo-cont'>

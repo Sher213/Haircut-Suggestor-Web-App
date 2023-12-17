@@ -1,0 +1,47 @@
+.left {
+    position: relative;
+    background-color: blue;
+    width: 30%;
+    height: 100%;
+
+    .submit {
+        height: 5%;
+    }
+}
+
+.result {
+    background-color: cornflowerblue;
+    color: black;
+    font-size: 50px;
+    width: 100%;
+    margin-left: 30%;
+    padding-right: 10%;
+
+    p {
+        background-color: white;
+        margin-left: 5%;
+        padding-left: 5%;
+        padding-bottom: 15px;
+        padding-top: 15px;
+    }
+
+    .photoContainer {
+        position: relative;
+        background-color: cadetblue;
+        width: fit-content;
+        height: fit-content;
+        margin-left: 25%;
+
+        .photoRes, .faceShapeRes {
+            position: absolute;
+        }
+
+        .hairTypeRes {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: fit-content;
+            height: fit-content;
+        }
+    }
+}
