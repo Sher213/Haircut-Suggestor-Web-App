@@ -10,7 +10,6 @@ const Camera = ({ onFacePosUpdate, onVideoRef, modPos, modW, modH, defCamWidth, 
     const shapeVideoRef = useRef();
 
     const [isExpanded, setIsExpanded] = useState(false);
-    const [isCentered, setIsCentered] = useState(false);
     const [facePos, setFacePos] = useState('');
 
     const getFaceBox = () => {
@@ -35,7 +34,7 @@ const Camera = ({ onFacePosUpdate, onVideoRef, modPos, modW, modH, defCamWidth, 
 
         let x = values[0] * (canv.width/defCamWidth);
         let y = values[1] * (canv.height/defCamHeight);
-        let w = values[2] * (canv.width/defCamWidth);
+        let w = values[2] * (canv.height/defCamHeight);
         let h = values[3] * (canv.height/defCamHeight);
 
         if (facePos && !(facePos === '')) {
@@ -125,11 +124,11 @@ const Camera = ({ onFacePosUpdate, onVideoRef, modPos, modW, modH, defCamWidth, 
         const h = document.querySelector('.hairTypeRes');
 
         if (camera && main && isExpanded == false) {
-            camera.style.width = '90vw';
+            camera.style.width = '99vw';
             camera.style.height = '90vh';
             camera.style.position = 'absolute';
             camera.style.top = '0';
-            camera.style.left = '5vw';
+            camera.style.left = '0';
 
             p.style.opacity = 0;
             f.style.opacity = 0;
@@ -204,10 +203,10 @@ const Camera = ({ onFacePosUpdate, onVideoRef, modPos, modW, modH, defCamWidth, 
             <canvas ref={shapeVideoRef}></canvas>
             <div className="take-photo-container">
                 <button className="expandView" onClick={toggleCam}>
-                    <FontAwesomeIcon icon={isExpanded ? faMinimize : faExpand } color='lime'></FontAwesomeIcon>
+                    <FontAwesomeIcon icon={isExpanded ? faMinimize : faExpand } color='teal'></FontAwesomeIcon>
                 </button>
                 <button onClick={onButtonClick} className="take-photo-button">
-                    <FontAwesomeIcon icon={faMailForward} color='lime'></FontAwesomeIcon>
+                    <FontAwesomeIcon icon={faMailForward} color='teal'></FontAwesomeIcon>
                 </button>
             </div>
         </div>

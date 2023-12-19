@@ -8,7 +8,7 @@ import oblong from '../../assets/images/oblong-example-home.png';
 import oval from '../../assets/images/oval-example-home.png';
 import round from '../../assets/images/round-example-home.png';
 import square from '../../assets/images/square-example-home.png';
-import Graph from '../GraphsScroll';
+import GraphsScroll from '../GraphsScroll';
 import { useEffect, useState } from 'react'
 
 const Home = () => {
@@ -17,7 +17,7 @@ const Home = () => {
     useEffect(() => {
         const timer = setInterval(() => {
             setCurrentImage((prevImage) => (prevImage +1) % 5);   
-        }, 3000);
+        }, 2000);
 
         return () => clearInterval(timer);
     }, [])
@@ -36,7 +36,7 @@ const Home = () => {
                         A unique experience which will take you step by step to your new makeover: <br/>
                         <ul>
                             <li>First, we will take a picture of you to determine your face shape and hair texture. <br/></li>
-                            <li>Then we will provide you with a series of recommended haircuts suiting your features. <br/></li>
+                            <li>Then, we will provide you with a series of recommended haircuts suiting your features. <br/></li>
                             <li>Finally, we will provide you with popular, local barbers and salonists to book your next appointment with
                                 the confidence of knowing what suites you.</li>
                         </ul>
@@ -62,7 +62,7 @@ const Home = () => {
                     />
                     ))}
                     <div className='graph-container'>
-                        <Graph/>
+                        <GraphsScroll/>
                     </div>
                 </div>
             </div>

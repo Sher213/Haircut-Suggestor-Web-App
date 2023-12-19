@@ -49,5 +49,3 @@ def get_insta_images(hashtag):
         print(repr(e))
         return([])
 
-
-

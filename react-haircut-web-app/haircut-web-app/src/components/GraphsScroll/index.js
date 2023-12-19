@@ -1,5 +1,5 @@
 import './index.scss';
-import React from "react";
+import React, { useEffect } from "react";
 import { Pie, Bar } from "react-chartjs-2";
 import Chart from 'chart.js/auto';
 import { CategoryScale } from 'chart.js';
@@ -34,7 +34,6 @@ const GraphsScroll = () => {
           labels: HairTypes.map((data) => data.type),
           datasets: [
             {
-              label: 'percentages ',
               data: HairTypes.map((data) => data.percentage),
               backgroundColor: ['#FF7F50', '#F88379', '#1B5366'],
               borderColor: 'black',
@@ -46,7 +45,6 @@ const GraphsScroll = () => {
             labels: FaceHeightWidth.map((data) => data.shape),
             datasets: [
               {
-                label: 'ratio ',
                 data: FaceHeightWidth.map((data) => data.mean),
                 backgroundColor: [
                 '#FF7F50',
@@ -63,7 +61,6 @@ const GraphsScroll = () => {
             labels: WidthForeheadJaw.map((data) => data.shape),
             datasets: [
                 {
-                    label: 'ratio ',
                     data: WidthForeheadJaw.map((data) => data.mean),
                     backgroundColor: [
                     '#FF7F50',
@@ -80,7 +77,6 @@ const GraphsScroll = () => {
             labels: HairCutsFrequencyWithin6MonthsMillions2020.map((data) => data.times),
             datasets: [
                 {
-                    label: 'Number of people (millions) ',
                     data: HairCutsFrequencyWithin6MonthsMillions2020.map((data) => data.number),
                     backgroundColor: [
                     '#FF7F50',
@@ -104,6 +100,14 @@ const GraphsScroll = () => {
         );
     };
 
+    useEffect(() => {
+        const i = setInterval(() => {
+            handleNextChart()
+        }, 5000);
+
+        return () => clearInterval(i);
+    }, [])
+
     return (
         <div className='chart-container'>
             {chartData.map((_, index) => (
@@ -123,7 +127,7 @@ const GraphsScroll = () => {
                     />
                     ) : index === 1 ? (
                     <Bar
-                        className='chart'
+                        className='chart bar'
                         data={chartData[1]}
                         options={{
                         plugins: {
@@ -131,12 +135,15 @@ const GraphsScroll = () => {
                             display: true,
                             text: 'Different Hair Types',
                             },
+                            legend: {
+                                display: false
+                            }
                         },
                         }}
                     />
                     ) : index === 2 ? (
                     <Bar
-                        className='chart'
+                        className='chart bar'
                         data={chartData[2]}
                         options={{
                         plugins: {
@@ -144,12 +151,21 @@ const GraphsScroll = () => {
                             display: true,
                             text: 'Mean Face Height to Width Ratio of Face Shapes',
                             },
+                            legend: {
+                                display: false
+                            }
                         },
+                        scales: {
+                            y: {
+                                min: 1.2,
+                                max: 1.4
+                            }
+                        }
                         }}
                     />
                     ) : index === 3 ? (
                     <Bar
-                        className='chart'
+                        className='chart bar'
                         data={chartData[3]}
                         options={{
                         plugins: {
@@ -157,12 +173,21 @@ const GraphsScroll = () => {
                             display: true,
                             text: 'Mean Forehead to Jaw Width Ratio of Face Shapes',
                             },
+                            legend: {
+                                display: false
+                            }
                         },
+                        scales: {
+                            y: {
+                                min: 1.075,
+                                max: 1.125
+                            }
+                        }
                         }}
                     />
                     ) : (
                     <Bar
-                        className='chart'
+                        className='chart bar'
                         data={chartData[4]}
                         options={{
                         plugins: {
@@ -170,6 +195,9 @@ const GraphsScroll = () => {
                             display: true,
                             text: 'Frequency of Haircuts within 6 Months in 2020',
                             },
+                            legend: {
+                                display: false
+                            }
                         },
                         }}
                     />

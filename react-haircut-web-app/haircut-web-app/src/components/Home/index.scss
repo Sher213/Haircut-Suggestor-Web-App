@@ -44,7 +44,7 @@
             display: flex;
             justify-content: center;
             opacity: 0;
-            animation: fadeIn 1s ease-in forwards;
+            animation: fadeIn 500ms ease-in forwards;
             animation-delay: 2s;
     
             @keyframes fadeIn {
@@ -61,7 +61,7 @@
                 opacity: 0;
                 transition: opacity 1s ease-in-out;
                 height: 40%;
-                bottom: 90px;
+                top: 15%;
             }
             
             .visible {
@@ -73,7 +73,7 @@
             }
 
             .graph-container {
-                margin-top: 2%;
+                margin-top: 50vh;
             }
         }
 
