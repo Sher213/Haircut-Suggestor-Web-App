@@ -1,0 +1,13 @@
+.chart-container {
+    .chart {
+        position: absolute;
+    }    
+    .navigation {
+        position: absolute;
+        bottom: 50%;
+        .active-circle {
+            color: blue;
+        }
+    }
+
+}
