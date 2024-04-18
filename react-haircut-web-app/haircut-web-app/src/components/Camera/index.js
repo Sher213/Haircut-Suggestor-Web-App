@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import './index.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faExpand, faMinimize, faMailForward } from '@fortawesome/free-solid-svg-icons';
+import { faExpand, faMinimize, faCamera } from '@fortawesome/free-solid-svg-icons';
 import ClassifierAPI from "../ClassifierAPI";
 
 const Camera = ({ onFacePosUpdate, onVideoRef, modPos, modW, modH, defCamWidth, defCamHeight, isClassified, prediction, faceShape, onButtonClick }) => {
@@ -206,7 +206,7 @@ const Camera = ({ onFacePosUpdate, onVideoRef, modPos, modW, modH, defCamWidth, 
                     <FontAwesomeIcon icon={isExpanded ? faMinimize : faExpand } color='teal'></FontAwesomeIcon>
                 </button>
                 <button onClick={onButtonClick} className="take-photo-button">
-                    <FontAwesomeIcon icon={faMailForward} color='teal'></FontAwesomeIcon>
+                    <FontAwesomeIcon icon={faCamera} color='teal'></FontAwesomeIcon>
                 </button>
             </div>
         </div>

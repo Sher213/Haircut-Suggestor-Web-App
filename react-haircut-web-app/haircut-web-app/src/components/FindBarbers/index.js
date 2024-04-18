@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const FindBarbers = () => {
     const [userLocation, setUserLocation] = useState(null);
+    const location = useLocation();
+    const predictions = location.state.predictions;
+    const hairstyle = location.state.hashtag;
 
     const googleMapsApiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
     let openInfoWindow = null;
@@ -73,7 +77,6 @@ const FindBarbers = () => {
                         
                         service.nearbySearch(request1, (results, status) => {
                             if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-                                console.log('Nearby Barbers: ', results);
 
                                 results.forEach((place) => {
                                     const marker = new window.google.maps.Marker({
@@ -113,7 +116,8 @@ const FindBarbers = () => {
 
     return (
         <div className="cont page find-barber-container">
-            <h3>Find Barbers Near You</h3>
+            <h3 style={{paddingLeft:"20px"}}>Find Barbers or Salons Near You: </h3>
+            <p style={{paddingLeft:"20px"}}>Because you have a {predictions.face_prediction} face and {predictions.hair_prediction} hair, we recommend a #{hairstyle} for you!</p>
             <div id="map" style={{ height: "600px", width: "100%" }}></div>
         </div>
     );

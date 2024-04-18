@@ -10,6 +10,9 @@ import squareS from '../../assets/images/square.png';
 import wavyHair from '../../assets/images/wavy.png';
 import straightHair from '../../assets/images/straight.png';
 import curlyHair from '../../assets/images/curly.png';
+import resultsBackground from '../../assets/images/result-bg.jpg'
+import { faArrowRight, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Camera from '../Camera';
 
 const Classification = () => {
@@ -33,14 +36,28 @@ const Classification = () => {
     const [photoClassified, setPhotoClassified] = useState(false);
     const [isClassified, setClassified] = useState(false);
     const [needFaceMessage, setNeedFaceMessage] = useState(false);
+    const [currentTip, setCurrentTip] = useState(0)
 
     const [resultVisible, setResultVisible] = useState(false);
+    const [isArrowHovered, setArrowHovered] = useState(false);
     const [loading, setLoading] = useState(true);
 
     const [prediction, setPrediction] = useState({
         face_prediction: '',
         hair_prediction: '',
     });
+
+    const handleArrowHover = () => {
+        setArrowHovered(true);
+    };
+    
+      const handleArrowLeave = () => {
+        setArrowHovered(false);
+    };
+
+    const slideInStyles = {
+        transform: `translateX(${isArrowHovered ? '50px' : '-530px'})`,
+      };
 
     const handleFacePosUpdate = (updatedFacePos) => {
         setFacePos(updatedFacePos);
@@ -100,9 +117,8 @@ const Classification = () => {
     }
 
     const handleButtonClick = () => {
-        classify()
+        classify();
     }
-
 
     const classify = () => {
         setClassified(false);
@@ -235,6 +251,14 @@ const Classification = () => {
     }, [facePos])
 
     useEffect(() => {
+        const timer = setInterval(() => {
+            setCurrentTip((prevTip) => (prevTip +1) % 5);   
+        }, 5000);
+
+        return () => clearInterval(timer);
+    }, [])
+
+    useEffect(() => {
         const timer = setTimeout(() => {
             drawResult();
         }, 2000)
@@ -251,6 +275,8 @@ const Classification = () => {
 
     return (
         <div className= "main">
+            {isClassified && loading && <div className="loading-spinner"></div>}
+            {!resultVisible && (
             <div className="left">
                 <Camera
                     onFacePosUpdate={handleFacePosUpdate}
@@ -266,24 +292,52 @@ const Classification = () => {
                     onButtonClick={handleButtonClick}/>
                 <div className="alert-message-container">
                     {needFaceMessage ? (
-                    <div style={{ paddingLeft: '30px', background: 'red', color: "yellow", marginTop: "10px" }}>
+                    <div style={{ paddingLeft: '30px', background: 'red', color: "yellow"}}>
                         Need face before classifying.
                     </div>
                     ) : (
-                    <div style={{ paddingLeft: '30px', background: 'green', color: "yellow", marginTop: "10px" }}>
+                    <div style={{ paddingLeft: '30px', background: 'green', color: "yellow"}}>
                         Face found.
                     </div>
                     )}
                 </div>
             </div>
-            <form className="recommendationsForm" onSubmit={handleRecommendationsClick}>
-                <button className="submitForRecommendations" type="submit">Recommendations</button>
-            </form>
+            )}
+            {!resultVisible && (
+                <div className="how-container">
+                    <h1>What to do:</h1>
+                    <p>It's pretty simple! Just look into the camera and watch AI do it's magic. Don't worry, we don't store your photo in any format, it is just used
+                    by us to get you your results. Please read our <a href="/privacy">Privacy Policy</a> for more details.
+                    </p>
+                    {[
+                    "Tip: Make sure to take off any glasses or hats before you take a picture!", 
+                    "Tip: Make sure lighting is soft, no hard shadows on your face!", 
+                    "Tip: Make sure to look up, and position your face in the center of the camera!", 
+                    "Tip: Wait for the Face Found Notifer to turn green before you click on the camera button!", 
+                    "Tip: Don't smile! It will make it harder for the AI to give you your results!",
+                    "Tip: If it says 'no faces were detected.' Don't worry! Give it another shot!"
+                    ].map((text, index) => (
+                    <p className="tips" key={index} style={{opacity: index == currentTip ? 1 : 0}}>{text}</p>
+                    ))}
+                </div>
+            )}
             <div className={`result ${resultVisible ? 'active' : ''}`}>
-                {isClassified && loading && <div className="loading-spinner"></div>}
-                <p style={{fontSize: '25px'}}>Face Prediction: {prediction.face_prediction}</p>
-                <p style={{fontSize: '25px'}}>Hair Prediction: {prediction.hair_prediction}</p>
-                <div className="photoContainer">
+                <div className="background-container">
+                    <img className='background' src={resultsBackground} alt=""/>
+                </div>
+                <div className="arrow-container" onMouseEnter={handleArrowHover} onMouseLeave={handleArrowLeave}>
+                    <FontAwesomeIcon icon={isArrowHovered ? faArrowLeft : faArrowRight} color='black'/>
+                </div>
+                <div className="pred">
+                    <h3>Results:</h3>
+                    <p style={{fontSize: '25px'}}>Face Shape: {prediction.face_prediction}</p>
+                    <p style={{fontSize: '25px'}}>Hair Type: {prediction.hair_prediction}</p>
+                </div>
+                <form className="recommendationsForm" onSubmit={handleRecommendationsClick}>
+                    <p style={{fontSize: '25px'}}>We're almost there! Click to go to your handpicked haircut recommendations.</p>
+                    <button className="submitForRecommendations" type="submit" style={{cursor: 'pointer'}}>Recommendations</button>
+                </form>
+                <div className="photoContainer" style={slideInStyles}>
                     <canvas className="photoRes" ref={photoRef}></canvas>
                     <canvas className="faceShapeRes" ref={shapePhotoRef}></canvas>
                     <canvas className="hairTypeRes" ref={hairTypeRef}></canvas>

@@ -16,43 +16,102 @@
     position: relative;
 }
 
+.how-container {
+    position: relative;
+    margin-left: 30px;
+
+    .tips {
+        background-color: beige;
+        border: 3px solid rgb(59, 165, 59);
+        padding: 5px 10px;
+        bottom: 2%;
+        width: 150px;
+        position: absolute;
+        font-weight: bolder;
+    }
+}
+
 .result {
+    position: relative;
     background-color: grey;
     color: black;
     font-size: 50px;
     width: 100%;
     height: 60vh;
     z-index: 999;
-    position: fixed;
-    top: 10vh;
     left: -100%;
     transition: left 1s ease-in-out;
+    display: flex;
+    flex-direction: column;
 
-    p {
-        background-color: white;
-        margin-left: 5%;
-        padding-left: 5%;
-        padding-bottom: 15px;
-        padding-top: 15px;
+    .recommendationsForm {
+        position: relative;
+        margin-left: 50px;
+        width: 250px;
+        margin-bottom: 25px;
+
+        button {
+            padding: 5px 10px;
+            background-color: beige;
+            text-decoration: none;
+            color: teal;
+            font-weight: bold;
+            font-size: 25px;
+            letter-spacing: 2px;
+            border: 3px solid teal;
+        }
+    }
+
+    .arrow-container {
+        position: absolute;
+        top: 40%;
+        z-index: 997;
+    }
+
+    .pred {
+        height: 100%;
+        margin-left: 50px;
+        line-height: 10px;
+
+        p {
+            margin-left: 25px;
+        }
+        
     }
 
     .photoContainer {
-        position: relative;
-        background-color: cadetblue;
-        width: fit-content;
-        height: fit-content;
-        margin-left: 25%;
+        opacity: 1;
+        position: fixed;
+        left: 0;
+        width: 500px;
+        height: 500px;
+        margin-top: 15px;
+        background-color: teal;
+        padding: 10px 10px;
 
         .photoRes, .faceShapeRes {
             position: absolute;
         }
 
         .hairTypeRes {
-            position: absolute;
+            position: relative;
             bottom: 0;
             right: 0;
             width: fit-content;
             height: fit-content;
+        }
+    }
+
+    .background-container {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        right: 0;
+
+        .background {
+            width: 100%;
+            height: 100%;
         }
     }
 }

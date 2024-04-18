@@ -94,15 +94,13 @@ const HairCutRecommendations = () => {
                         else {
                             imagesSubset = null;
                         }
-                        console.log(imagesSubset)
-    
                         return (
                             <div
                                 key={index}
                                 className={`tab-content ${index === activeTabIndex ? 'active-content' : 'inactive-content'}`}
                             >
                                 {index === activeTabIndex && haircutDescs && (
-                                <RecommendationTab hashtag={recommendedHashtag} images={imagesSubset} hairStyleDesc={haircutDescs.descriptions[index]} />
+                                <RecommendationTab predictions={predictions}hashtag={recommendedHashtag} images={imagesSubset} hairStyleDesc={haircutDescs.descriptions[index]} />
                                 )}
                             </div>
                         );

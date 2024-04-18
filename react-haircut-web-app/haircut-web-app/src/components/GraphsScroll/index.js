@@ -186,8 +186,8 @@ const GraphsScroll = () => {
                         }}
                     />
                     ) : (
-                    <Bar
-                        className='chart bar'
+                    <Pie
+                        className='chart'
                         data={chartData[4]}
                         options={{
                         plugins: {
@@ -195,9 +195,6 @@ const GraphsScroll = () => {
                             display: true,
                             text: 'Frequency of Haircuts within 6 Months in 2020',
                             },
-                            legend: {
-                                display: false
-                            }
                         },
                         }}
                     />
